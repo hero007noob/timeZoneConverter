@@ -1,35 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+// App.jsx
+import React, { useState } from "react";
+import { Box, Text, Button, useColorMode } from "@chakra-ui/react";
+import TimeZoneConverter from "./Tzc";
+import SearchBox from "./components/Search";
+import "./styles.less";
+import TopBar from "./components/TopBar";
+import Slider from "./components/slider/Slider";
+import TimeZone from "./components/timeZones/TimeZone";
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [reverse, setReverse] = useState(false);
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Box p={4}>
+      {/* <TimeZoneConverter /> */}
+      <TopBar setReverse={setReverse} />
+      <TimeZone reverse={reverse} />
+      {/* <Slider /> */}
+    </Box>
+  );
 }
 
-export default App
+export default App;
