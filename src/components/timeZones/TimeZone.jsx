@@ -51,7 +51,6 @@ const TimeZone = ({ reverse }) => {
     setSelectedTime(data.selectedDate);
   }, [data]);
   const handleDragStart = (props) => {
-    console.log(props);
   };
   useEffect(() => {
     const updatedTimeZones = reverse
@@ -61,14 +60,11 @@ const TimeZone = ({ reverse }) => {
     setTimeZones(updatedTimeZones);
   }, [reverse]);
   const handleDragEnd = ({ active, over }) => {
-    console.log(active, over);
     if (over && active.id !== over.id)
       setTimeZones((timeZones) => {
         let oldIdx = timeZones.findIndex((item) => item.id === active.id);
         let newIdx = timeZones.findIndex((item) => item.id === over.id);
-        console.log(oldIdx, newIdx);
         let x = arrayMove(timeZones, oldIdx, newIdx);
-        console.log(x);
         return x;
       });
   };
@@ -79,12 +75,9 @@ const TimeZone = ({ reverse }) => {
     const queryString = location.search;
     const urlParams = new URLSearchParams(queryString);
     const value = urlParams.get("info");
-    console.log("en", value);
     const decodedString = decodeURIComponent(value);
-    console.log("dec", decodedString);
   }, [location]);
   const handleSetSelectedTime = (date) => {
-    console.log("here");
     setSelectedTime(date);
   };
   return (

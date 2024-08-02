@@ -29,7 +29,6 @@ const TimeZoneConverter = () => {
         type="datetime-local"
         value={inputTime}
         onChange={(e) => {
-          console.log(e.target.value);
           setInputTime(e.target.value);
         }}
       />

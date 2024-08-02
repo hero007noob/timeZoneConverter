@@ -22,7 +22,6 @@ const Slider = ({
   const date = moment(selectedTime);
   const newDate = date.tz(timeZone);
   const formatedNewDate = newDate.format("MMMM Do YYYY, h:mm:ss a");
-  console.log("okkkkk", formatedNewDate);
   useEffect(() => {
     setTime(format(selectedTime, "h:mm aa"));
   }, [selectedTime]);
@@ -74,7 +73,6 @@ const Slider = ({
 
     if (sliderInstance.current) {
       const newTimeInMinutes = calculateTimeInMinutes(selectedTime, timeZone);
-      console.log("slider", newTimeInMinutes);
       sliderInstance.current.set(newTimeInMinutes);
     }
     return () => {
@@ -93,15 +91,12 @@ const Slider = ({
     return hours * 60 + minutes;
   };
   const handleUpdateTime = (minutes) => {
-    console.log(timeZone, selectedDate);
     const newDate = new Date(selectedDate);
     const startOfDay = new Date(newDate.setHours(0, 0, 0, 0));
     const updatedTime = getTimeAfterMinutes(startOfDay, minutes, timeZone);
     const formattedTime = format(updatedTime, "hh:mm a", { timeZone });
-    console.log(formattedTime, updatedTime, startOfDay);
     setTime(formattedTime);
     const utcDateString = convertToUTC(updatedTime.toISOString());
-    console.log("xxyyxxyyxx", selectedDate, utcDateString);
     setSelectedTime(utcDateString);
   };
   const convertToUTC = (isoDateString) => {

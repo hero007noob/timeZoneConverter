@@ -18,7 +18,6 @@ function Dropdown({ query, clearInput }) {
     debounce(async (query) => {
       if (query) {
         const results = await getPlaceSuggestions(query);
-        console.log("geo results", results);
         setSuggestions(results);
       } else {
         setSuggestions([]);
@@ -30,77 +29,11 @@ function Dropdown({ query, clearInput }) {
     fetchSuggestions(query);
   }, [query, fetchSuggestions]);
 
-  //   // const lat = place.geometry.lat;
-  //   // const long = place.geometry.lng;
-  //   // const timeZone = await fetchTimeZone(lat, long);
-  //   console.log("place", place);
-  //   console.log(
-  //     "place.annotations.timezone.name",
-  //     place.annotations.timezone.name,
-  //     "timeData.selectedDate",
-  //     timeData.selectedDate
-  //   );
-  //   const localTime = moment.tz(
-  //     timeData.selectedDate,
-  //     place.annotations.timezone.name
-  //   );
-  //   const timeZoneAbv = localTime.format("z");
-
-  //   const zoneDate = moment.tz(
-  //     timeData.selectedDate,
-  //     place.annotations.timezone.name
-  //   );
-  //   const zonedDate = toZonedTime(
-  //     timeData.selectedDate,
-  //     place.annotations.timezone.name
-  //   ).toISOString();
-  //   // // Convert the input time from the source time zone to UTC
-  //   const utcDate = fromZonedTime(timeData.selectedDate, "Asia/Kolkata");
-  //   // // Convert from UTC to the target time zone
-  //   const zonedDate1 = toZonedTime(utcDate, place.annotations.timezone.name);
-  //   console.log(
-  //     "\nutcDate",
-  //     utcDate,
-  //     "\nzoneDate",
-  //     zonedDate1,
-  //     "\nselected",
-  //     timeData.selectedDate,
-  //     "\ncurrent",
-  //     new Date().toISOString()
-  //   );
-  //   const data = {
-  //     id: uuidv4(),
-  //     zone: timeZoneAbv,
-  //     description: place.components.state + " " + place.components.country,
-  //     time: timeData.selectedTime,
-  //     gmtOffset: timeZoneAbv + " " + place.annotations.timezone.offset_string,
-  //     date: zonedDate,
-  //     timeZone: place.annotations.timezone.name,
-  //     formattedString: place.formatted,
-  //   };
-  //   console.log("new", timeData);
-  //   dispatch(addTimezone(data));
-  //   setSuggestions([]);
-  //   clearInput();
-  // };
   const addTimeZoneAct = async (place) => {
-    console.log("place", place);
-    console.log(
-      "place.annotations.timezone.name",
-      place.annotations.timezone.name
-    );
-    console.log("timeData.selectedDate", timeData.selectedDate);
-
     const date = moment(timeData.selectedDate);
     const newDate = date.tz(place.annotations.timezone.name);
     const formatedNewDate = newDate.format("MMMM Do YYYY, h:mm:ss a");
-    console.log(
-      "xxxxx",
-      place.annotations.timezone.name,
-      date,
-      newDate,
-      formatedNewDate
-    );
+
     const localTime = moment.tz(
       timeData.selectedDate,
       place.annotations.timezone.name
