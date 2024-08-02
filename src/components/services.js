@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const GEO_API_KEY = '108b2ee2731d4c1ca584f7d2b846b378'; // Replace with your API key
+const GEO_API_KEY = import.meta.env.VITE_GEO_API_KEY; // Replace with your API key
 const GEO_BASE_URL = 'https://api.opencagedata.com/geocode/v1/json';
-const TIMEZONE_API_KEY = 'TWETIUFCKBEX';
+const TIMEZONE_API_KEY = import.meta.env.VITE_TIMEZONE_API_KEY;
 const TIMEZONE_BASE_URL = 'http://api.timezonedb.com/v2.1/get-time-zone';
 
 export const getPlaceSuggestions = async (query) => {
