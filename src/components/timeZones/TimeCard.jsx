@@ -110,7 +110,10 @@ const TimeCard = ({
           </Box>
         </Flex>
         <Flex gap={"10px"}>
-          <Flex flexDirection={"column"} alignItems={"center"}>
+          <Flex
+            flexDirection={"column"}
+            alignItems={"center"}
+            marginRight={"300px"}>
             <Input
               type="time"
               value={newDate.format("HH:mm")}

@@ -1,13 +1,10 @@
-// Dropdown.js
 import React, { useState, useEffect, useCallback } from "react";
 import { Menu, MenuList, MenuItem, Box } from "@chakra-ui/react";
-import { getPlaceSuggestions } from "../services";
+import { addTimeZoneAct, getPlaceSuggestions } from "../services";
 import debounce from "lodash/debounce";
 import { useDispatch, useSelector } from "react-redux";
 import "./styles.less";
 import { addTimezone } from "../timezoneSlice";
-import { v4 as uuidv4 } from "uuid";
-import moment from "moment-timezone";
 
 function Dropdown({ query, clearInput }) {
   const [suggestions, setSuggestions] = useState([]);
@@ -25,48 +22,23 @@ function Dropdown({ query, clearInput }) {
     }, 500),
     []
   );
+
   useEffect(() => {
     fetchSuggestions(query);
   }, [query, fetchSuggestions]);
 
-  const addTimeZoneAct = async (place) => {
-    const date = moment(timeData.selectedDate);
-    const newDate = date.tz(place.annotations.timezone.name);
-    const formatedNewDate = newDate.format("MMMM Do YYYY, h:mm:ss a");
-
-    const localTime = moment.tz(
-      timeData.selectedDate,
-      place.annotations.timezone.name
-    );
-
-    const timeZoneAbv = localTime.format("z");
-    const zonedDate = localTime.format();
-
-    const data = {
-      id: uuidv4(),
-      zone: timeZoneAbv,
-      description: `${place.components.state} ${place.components.country}`,
-      time: timeData.selectedTime,
-      gmtOffset: `${timeZoneAbv} ${place.annotations.timezone.offset_string}`,
-      date: zonedDate,
-      timeZone: place.annotations.timezone.name,
-      formattedString: place.formatted,
-    };
-
-    dispatch(addTimezone(data));
+  const handleAddTimezone = async (place) => {
+    await addTimeZoneAct(place, timeData.selectedDate, dispatch, addTimezone);
     setSuggestions([]);
     clearInput();
   };
+
   return (
     <Box p={4} className="menu-container">
       <Menu isOpen={suggestions.length > 0}>
         <MenuList className="menu-list">
           {suggestions.map((place, index) => (
-            <MenuItem
-              onClick={() => {
-                addTimeZoneAct(place);
-              }}
-              key={index}>
+            <MenuItem onClick={() => handleAddTimezone(place)} key={index}>
               {place.formatted}
             </MenuItem>
           ))}

@@ -113,8 +113,7 @@ const Slider = ({
   };
   return (
     <div className="Slider">
-      <div ref={sliderRef} className="slider"></div>
-      <div className="time-display">{time}</div>
+      <div ref={sliderRef} className="slider"></div> 
     </div>
   );
 };

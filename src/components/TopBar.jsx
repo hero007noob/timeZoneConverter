@@ -57,7 +57,7 @@ const TopBar = ({ setReverse }) => {
     return format(zonedDate, "MMM d, yyyy");
   };
   return (
-    <Box p={4} boxShadow="sm" bg={colorMode == "light" ? "white" : "brand-900"}>
+    <Box p={4} pb={12} pt={5} boxShadow="sm" bg={colorMode == "light" ? "white" : "brand-900"}>
       <Flex alignItems="center" gap={2}>
         <SearchBox />
 

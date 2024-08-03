@@ -1,4 +1,3 @@
-// TimeZones.js
 import React, { useEffect, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { DndContext } from "@dnd-kit/core";
@@ -6,22 +5,20 @@ import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import TimeCard from "./TimeCard";
 import { useDispatch, useSelector } from "react-redux";
-import { format } from "date-fns-tz";
 import { useLocation, useNavigate } from "react-router-dom";
-import { deleteTimezone } from "../timezoneSlice";
-import moment from "moment-timezone";
+import { addTimezone, deleteTimezone } from "../timezoneSlice";
+import { addTimeZoneAct, getPlaceSuggestions } from "../services";
 
 const updateUrl = (data) => {
   const { selectedDate, timezones } = data;
   let paramString = timezones
-    .map((timezone, i) => {
-      return timezone.formattedString;
-    })
+    .map((timezone) => timezone.formattedString)
     .join(" + ");
   if (paramString) paramString += " + ";
   paramString += selectedDate;
   return paramString;
 };
+
 const useUpdateQueryParam = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,10 +26,10 @@ const useUpdateQueryParam = () => {
   return (key, value) => {
     const params = new URLSearchParams(location.search);
     params.set(key, encodeURIComponent(value));
-
     navigate(`${location.pathname}?${params.toString()}`);
   };
 };
+
 const TimeZone = ({ reverse }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,43 +40,66 @@ const TimeZone = ({ reverse }) => {
   const updateQueryParam = useUpdateQueryParam();
   const [selectedDate, setSelectedDate] = useState(data.selectedDate);
   const [selectedTime, setSelectedTime] = useState(selectedDate);
+
   useEffect(() => {
     const queryString = location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const queryValue = urlParams.get("info");
+    const decodedString = decodeURIComponent(queryValue);
+    const locations = decodedString.split(" + ");
+    const date = locations.pop();
+
+    const fetchAllData = async () => {
+      try {
+        const results = await Promise.all(
+          locations.map((location) => getPlaceSuggestions(location))
+        );
+        const data = results.map((result) => result[0]);
+        for (const result of data) {
+          await addTimeZoneAct(result, date, dispatch, addTimezone);
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+
+    fetchAllData();
+  }, []);
+
+  useEffect(() => {
     updateQueryParam("info", updateUrl(data));
     setTimeZones(data.timezones);
     setSelectedDate(data.selectedDate);
     setSelectedTime(data.selectedDate);
   }, [data]);
-  const handleDragStart = (props) => {
-  };
+
+  const handleDragStart = () => {};
+
   useEffect(() => {
     const updatedTimeZones = reverse
       ? [...data.timezones].reverse()
       : [...data.timezones];
-
     setTimeZones(updatedTimeZones);
   }, [reverse]);
+
   const handleDragEnd = ({ active, over }) => {
-    if (over && active.id !== over.id)
+    if (over && active.id !== over.id) {
       setTimeZones((timeZones) => {
-        let oldIdx = timeZones.findIndex((item) => item.id === active.id);
-        let newIdx = timeZones.findIndex((item) => item.id === over.id);
-        let x = arrayMove(timeZones, oldIdx, newIdx);
-        return x;
+        const oldIdx = timeZones.findIndex((item) => item.id === active.id);
+        const newIdx = timeZones.findIndex((item) => item.id === over.id);
+        return arrayMove(timeZones, oldIdx, newIdx);
       });
+    }
   };
+
   const handleDelete = (id) => {
     dispatch(deleteTimezone(id));
   };
-  useEffect(() => {
-    const queryString = location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const value = urlParams.get("info");
-    const decodedString = decodeURIComponent(value);
-  }, [location]);
+
   const handleSetSelectedTime = (date) => {
     setSelectedTime(date);
   };
+
   return (
     <Flex direction="column" align="center" padding="4">
       <DndContext
@@ -87,7 +107,7 @@ const TimeZone = ({ reverse }) => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}>
         <SortableContext items={timeZones}>
-          {timeZones.map((tz, index) => (
+          {timeZones.map((tz) => (
             <TimeCard
               id={tz.id}
               key={tz.id}
